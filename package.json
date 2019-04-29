@@ -3,14 +3,14 @@
     "license":         "MIT",
     "description":     "NodeJS Framework for Zeit Now",
     "author":          "Aaron Scherer <aequasi@gmail.com>",
-    "version":         "0.0.3",
+    "version":         "0.0.4",
     "main":            "dist/index.js",
     "types":           "dist/index.d.ts",
     "publishConfig":   {
         "access": "public"
     },
     "bin":             {
-        "buildNowJson": "./bin/buildNowJson.js"
+        "buildNowJson": "./bin/buildNowJson"
     },
     "dependencies":    {
         "inversify":        "^5.0.1",
