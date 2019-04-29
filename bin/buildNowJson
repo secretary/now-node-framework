@@ -1,4 +1,4 @@
 #!/bin/bash
 
 DIR=$(dirname "${BASH_SOURCE[0]}")
-ts-node $DIR/../dist/bin/buildNowJson.js
+ts-node $DIR/../@secretary/now-node-framework/dist/bin/buildNowJson.js
