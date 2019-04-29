@@ -1,0 +1,28 @@
+{
+    "compileOnSave":   false,
+    "exclude":         [
+        "node_modules",
+        "**/*.spec.ts"
+    ],
+    "compilerOptions": {
+        "target":                       "es2017",
+        "module":                       "commonjs",
+        "experimentalDecorators":       true,
+        "allowSyntheticDefaultImports": true,
+        "noUnusedLocals":               false,
+        "noUnusedParameters":           true,
+        "declaration":                  true,
+        "sourceMap":                    true,
+        "noImplicitAny":                false,
+        "outDir":                       "dist/",
+        "lib":                          [
+            "es2017"
+        ],
+        "typeRoots":                    [
+            "./node_modules/@types"
+        ],
+        "types":                        [
+            "node"
+        ]
+    }
+}
