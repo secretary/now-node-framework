@@ -1,32 +1,33 @@
 {
-    "name":            "@secretary/now-node-framework",
-    "license":         "MIT",
-    "description":     "NodeJS Framework for Zeit Now",
-    "author":          "Aaron Scherer <aequasi@gmail.com>",
-    "version":         "0.0.10",
-    "main":            "dist/index.js",
-    "types":           "dist/index.d.ts",
-    "publishConfig":   {
+    "name": "@secretary/now-node-framework",
+    "license": "MIT",
+    "description": "NodeJS Framework for Zeit Now",
+    "author": "Aaron Scherer <aequasi@gmail.com>",
+    "version": "0.1.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "publishConfig": {
         "access": "public"
     },
-    "bin":             {
+    "bin": {
         "buildNowJson": "./bin/buildNowJson"
     },
     "scripts": {
-        "prepublishOnly": "tsc -p tsconfig.json"
+        "build": "tsc -p tsconfig.json",
+        "prepublishOnly": "rm -r dist ; npm run build"
     },
-    "dependencies":    {
-        "inversify":        "^5.0.1",
-        "micro":            "^9.3.3",
-        "micro-cors":       "^0.1.1",
-        "micro-query":      "^0.3.0",
-        "micro-redirect":   "^1.0.0",
+    "dependencies": {
+        "inversify": "^5.0.1",
+        "micro": "^9.3.3",
+        "micro-cors": "^0.1.1",
+        "micro-query": "^0.3.0",
+        "micro-redirect": "^1.0.0",
         "reflect-metadata": "^0.1.13"
     },
     "devDependencies": {
-        "@types/micro":      "^7.3.3",
+        "@types/micro": "^7.3.3",
         "@types/micro-cors": "^0.1.0",
-        "tslint":            "^5.16.0",
-        "typescript":        "^3.4.5"
+        "tslint": "^5.16.0",
+        "typescript": "^3.4.5"
     }
 }

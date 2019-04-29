@@ -12,7 +12,10 @@ async function main() {
     const json    = require(process.cwd() + '/now.dist.json');
     const newJson = {...json};
 
-    const path    = resolve(process.cwd(), process.argv[1]);
+    const path    = resolve(process.cwd(), process.argv[2]);
+
+    console.log('Finding all actions in: ' + path);
+
     const files   = readdirSync(path);
     const actions = [];
     const routes  = [];
@@ -25,7 +28,7 @@ async function main() {
         const routeSrc  = Reflect.getMetadata('action:route:src', cls);
         const routeDest = Reflect.getMetadata('action:route:dest', cls) || '';
 
-        const src = join(process.argv[1], file);
+        const src = join(process.argv[2], file);
         actions.push({src, use: '@now/node'});
         routes.push({src: routeSrc, dest: '/' + src + routeDest});
     }
