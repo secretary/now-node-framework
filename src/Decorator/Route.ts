@@ -14,8 +14,19 @@ const Route = (url: string, dest?: string, kernelClass: typeof Kernel = Kernel):
         req.query    = query(req);
         const kernel = new kernelClass(process.env.NODE_ENV, process.env.NODE_ENV === 'production');
         await kernel.build(req, res);
+        const dispatcher = kernel.getContainer().get<NodeJS.EventEmitter>('Dispatcher');
 
-        return kernel.getContainer().resolve<ActionInterface>(target).invoke();
+        let response;
+        try {
+            dispatcher.emit('request', [req, res], target);
+            response = await kernel.getContainer().resolve<ActionInterface>(target).invoke();
+            dispatcher.emit('response', [req, res], target, response);
+        } catch (e) {
+            dispatcher.emit('exception', [req, res], target, response);
+            if (!res.headersSent) {
+                throw e;
+            }
+        }
     };
 
     Reflect.defineMetadata('action:route:src', url, newTarget);
