@@ -29,7 +29,7 @@ export default abstract class AbstractAction implements ActionInterface {
         return send(this.response, statusCode, message);
     }
 
-    public async exception(error: Error, statusCode: number = 500, message?: string): Promise<void> {
+    public async exception(error: Error, statusCode: number = 500, message?: any): Promise<void> {
         console.error(error);
 
         return this.error(message || error.message, statusCode);
