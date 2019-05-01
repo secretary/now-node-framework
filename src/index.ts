@@ -4,3 +4,6 @@ export {default as ResponseInterface} from './Interface/ResponseInterface';
 export {default as Route} from './Decorator/Route';
 export {default as AbstractAction} from './Action/AbstractAction';
 export {default as ActionInterface} from './Action/ActionInterface';
+export {default as Event} from './Event/Event';
+export {default as HTTPEvent} from './Event/HTTPEvent';
+export {default as HTTPExceptinEvent} from './Event/HTTPExceptionEvent';

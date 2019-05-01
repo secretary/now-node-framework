@@ -1,8 +1,11 @@
 import 'reflect-metadata';
+import {send} from 'micro';
 
 import * as query from 'micro-query';
 
 import ActionInterface from '../Action/ActionInterface';
+import HTTPEvent from '../Event/HTTPEvent';
+import HTTPExceptionEvent from '../Event/HTTPExceptionEvent';
 import RequestInterface from '../Interface/RequestInterface';
 import ResponseInterface from '../Interface/ResponseInterface';
 import Kernel from '../Kernel';
@@ -16,15 +19,31 @@ const Route = (url: string, dest?: string, kernelClass: typeof Kernel = Kernel):
         await kernel.build(req, res);
         const dispatcher = kernel.getContainer().get<NodeJS.EventEmitter>('Dispatcher');
 
-        let response;
+        let event;
         try {
-            dispatcher.emit('request', [req, res], target);
-            response = await kernel.getContainer().resolve<ActionInterface>(target).invoke();
-            dispatcher.emit('response', [req, res], target, response);
+            event = new HTTPEvent(req, res);
+            dispatcher.emit('request', event);
+            if (event.isPropagationStopped()) {
+                return;
+            }
+
+            await kernel.getContainer().resolve<ActionInterface>(target).invoke();
+            event = new HTTPEvent(req, res);
+            dispatcher.emit('response', event);
+            if (event.isPropagationStopped()) {
+                return;
+            }
         } catch (e) {
-            dispatcher.emit('exception', [req, res], target, response);
+            event = new HTTPExceptionEvent(req, res, e);
+            dispatcher.emit('exception', event);
+            if (event.isPropagationStopped()) {
+                return;
+            }
+
             if (!res.headersSent) {
-                throw e;
+                console.error(e);
+
+                return send(res, 500, e.message);
             }
         }
     };
