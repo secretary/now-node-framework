@@ -4,6 +4,7 @@ import {send} from 'micro';
 import * as query from 'micro-query';
 
 import ActionInterface from '../Action/ActionInterface';
+import Dispatcher from '../Event/Dispatcher';
 import HTTPEvent from '../Event/HTTPEvent';
 import HTTPExceptionEvent from '../Event/HTTPExceptionEvent';
 import RequestInterface from '../Interface/RequestInterface';
@@ -17,30 +18,23 @@ const Route = (url: string, dest?: string, kernelClass: typeof Kernel = Kernel):
         req.query    = query(req);
         const kernel = new kernelClass(process.env.NODE_ENV, process.env.NODE_ENV === 'production');
         await kernel.build(req, res);
-        const dispatcher = kernel.getContainer().get<NodeJS.EventEmitter>('Dispatcher');
+        const dispatcher = kernel.getContainer().get<Dispatcher>('Dispatcher');
 
-        let event;
+        let event: HTTPEvent;
         try {
-            event = new HTTPEvent(req, res);
-            dispatcher.emit('request', event);
-            if (event.isPropagationStopped()) {
+            event = await dispatcher.emit('request', new HTTPEvent(req, res));
+            if (event.response.headersSent) {
                 return;
             }
 
             await kernel.getContainer().resolve<ActionInterface>(target).invoke();
-            event = new HTTPEvent(req, res);
-            dispatcher.emit('response', event);
-            if (event.isPropagationStopped()) {
+            event = await dispatcher.emit('response', new HTTPEvent(req, res));
+            if (event.response.headersSent) {
                 return;
             }
         } catch (e) {
-            event = new HTTPExceptionEvent(req, res, e);
-            dispatcher.emit('exception', event);
-            if (event.isPropagationStopped()) {
-                return;
-            }
-
-            if (!res.headersSent) {
+            event = await dispatcher.emit('exception', new HTTPExceptionEvent(req, res, e));
+            if (!event.response.headersSent) {
                 console.error(e);
 
                 return send(res, 500, e.message);
