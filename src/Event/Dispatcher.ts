@@ -27,13 +27,12 @@ export default class Dispatcher {
     }
 
     public async emit<T extends Event>(eventName: string, event: T): Promise<T> {
-        const listeners = this.getListeners(eventName);
+        const listeners = Array.from(this.getListeners(eventName).values())
+                              .sort((a, b) => a.priority - b.priority);
 
         await Promise.resolve();
         for (const listener of listeners) {
-            if (listeners.has(listener)) {
-                await listener.invoke(event);
-            }
+            await listener.invoke(event);
 
             if (event.isPropagationStopped()) {
                 break;
