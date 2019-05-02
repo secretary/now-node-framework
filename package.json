@@ -3,7 +3,7 @@
     "license": "MIT",
     "description": "NodeJS Framework for Zeit Now",
     "author": "Aaron Scherer <aequasi@gmail.com>",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "publishConfig": {
